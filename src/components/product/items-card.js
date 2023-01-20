@@ -22,7 +22,7 @@ export const ItemsCard = ({ item, ...rest }) => (
       >
         <Avatar
           alt="Product"
-          src={item.media}
+          src={item.image_path.path}
           variant="square"
         />
       </Box>

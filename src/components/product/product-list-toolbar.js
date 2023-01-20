@@ -82,9 +82,11 @@ export const ProductListToolbar = (props) => {
           </CardContent>
         </Card>
       </Box>
-
-      <AddItemDialog open={open} onClose={handleClose} />
-
+      
+      {open ? 
+        <AddItemDialog open={open} onClose={handleClose} /> 
+        : null  
+      }
 
       {/* <Modal
         open={open}
