@@ -1,9 +1,27 @@
 import PropTypes from 'prop-types';
-import { Avatar, Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Divider, Grid, Typography, appBarClasses } from '@mui/material';
 import { Clock as ClockIcon } from '../../icons/clock';
 import { Download as DownloadIcon } from '../../icons/download';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export const ItemsCard = ({ item, ...rest }) => (
+export const ItemsCard = ({ item, ...rest }) => {
+  const [imageURI, setImageURI] = useState('')
+
+  useEffect(() => {
+    axios
+      .get(`http://192.168.1.92:5000/Item/getItemMainImageFile?path=${item.image_path.path}`, {
+        responseType: "blob",
+      })
+      .then((res) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(res.data);
+        reader.onloadend = () => setImageURI(reader.result);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  
+  return(
   <Card
     sx={{
       display: 'flex',
@@ -12,7 +30,14 @@ export const ItemsCard = ({ item, ...rest }) => (
     }}
     {...rest}
   >
-    <CardContent>
+    <CardContent
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+      height: '100%'
+    }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -20,10 +45,14 @@ export const ItemsCard = ({ item, ...rest }) => (
           pb: 3
         }}
       >
-        <Avatar
-          alt="Product"
-          src={item.image_path.path}
-          variant="square"
+        <img
+          alt="item"
+          src={imageURI}
+          style={{
+            width: "100%",
+            objectFit: "cover",
+            height: "100%"
+          }}
         />
       </Box>
       <Typography
@@ -90,6 +119,7 @@ export const ItemsCard = ({ item, ...rest }) => (
     </Box>
   </Card>
 );
+        }
 
 ItemsCard.propTypes = {
   item: PropTypes.object.isRequired
